@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login de Administrador</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="images/icons/admin.png" />
+    <style>
+      /* Estilos Gerais */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.9)
+          ),
+          url("https://source.unsplash.com/random/1920x1080?technology,abstract")
+            no-repeat center center/cover;
+        color: #fff;
+        overflow: hidden;
+      }
+
+      /* Animações de Fundo */
+      .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Formulário de Login */
+      form {
+        position: relative;
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        padding: 3rem 2rem;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        z-index: 1;
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      form h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #fff;
+      }
+
+      .note {
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+        color: #e0e0e0;
+      }
+
+      /* Campos de Entrada */
+      .input-group {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 0.75rem 2.5rem 0.75rem 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: #333;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+      }
+
+      .input-group input:focus {
+        outline: none;
+        box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+      }
+
+      .input-group .icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #333;
+        transition: color 0.3s ease;
+      }
+
+      .input-group .icon:hover {
+        color: #007bff;
+      }
+
+      /* Botão de Login */
+      button {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Toggle Password */
+      .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #333;
+      }
+
+      .toggle-password svg {
+        width: 24px;
+        height: 24px;
+        fill: #333;
+        transition: fill 0.3s ease;
+      }
+
+      .toggle-password:hover svg {
+        fill: #007bff;
+      }
+
+      /* Animação de Fade-In */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsividade */
+      @media (max-width: 480px) {
+        form {
+          padding: 2rem 1.5rem;
+        }
+
+        .input-group input {
+          padding: 0.75rem 2rem 0.75rem 0.8rem;
+        }
+
+        .toggle-password {
+          right: 0.8rem;
+        }
+      }
+
+      /* Partículas (Opcional) */
+      .particles {
+        background: transparent;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Estilizando o Corpo para Overlay */
+      body::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 0;
+      }
+
+      #eye-icon {
+        margin-top: 30px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <!-- Animações de Partículas (Opcional) -->
+    <canvas class="particles" id="particlesCanvas"></canvas>
+
+    <form action="/login" method="POST">
+      <h2>Bem-vindo(a)!</h2>
+      <p class="note">Faça login para acessar o painel administrativo</p>
+      <div class="input-group">
+        <label for="username">Usuário:</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          required
+          placeholder="Digite seu usuário"
+        />
+      </div>
+      <div class="input-group">
+        <label for="password">Senha:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="Digite sua senha"
+        />
+        <span class="toggle-password" onclick="togglePasswordVisibility()">
+          <svg id="eye-icon" viewBox="0 0 24 24">
+            <!-- Ícone de olho aberto -->
+            <path
+              d="M12 5C7 5 2.7 8.1 1 12c1.7 3.9 6 7 11 7s9.3-3.1 11-7c-1.7-3.9-6-7-11-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"
+            />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </span>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <script>
+      function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("password");
+        const eyeIcon = document.getElementById("eye-icon");
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          eyeIcon.innerHTML = `
+                    <!-- Ícone de olho fechado -->
+                    <path d="M12 5C7 5 2.7 8.1 1 12c1.7 3.9 6 7 11 7s9.3-3.1 11-7c-1.7-3.9-6-7-11-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+                `;
+        } else {
+          passwordInput.type = "password";
+          eyeIcon.innerHTML = `
+                    <!-- Ícone de olho aberto -->
+                    <path d="M12 5C7 5 2.7 8.1 1 12c1.7 3.9 6 7 11 7s9.3-3.1 11-7c-1.7-3.9-6-7-11-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                `;
+        }
+      }
+
+      // (Opcional) Código para Animação de Partículas
+      // Este é um exemplo simples de partículas usando canvas
+      const canvas = document.getElementById("particlesCanvas");
+      const ctx = canvas.getContext("2d");
+      let particlesArray;
+
+      const numberOfParticles = 100;
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 1;
+          this.speedX = Math.random() * 1 - 0.5;
+          this.speedY = Math.random() * 1 - 0.5;
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+
+        draw() {
+          ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function init() {
+        particlesArray = [];
+        for (let i = 0; i < numberOfParticles; i++) {
+          particlesArray.push(new Particle());
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particlesArray.forEach((particle) => {
+          particle.update();
+          particle.draw();
+        });
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener("resize", function () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init();
+      });
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+      animate();
+    </script>
+  </body>
+</html>

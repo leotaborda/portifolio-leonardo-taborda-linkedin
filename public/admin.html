@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Administração de Mensagens</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="images/icons/admin.png" />
+    <style>
+      /* Estilos Gerais */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f0f2f5; /* Cinza claro */
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      /* Navbar */
+      .navbar {
+        background-color: #003366; /* Cor da navbar */
+        color: #fff;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      .navbar .welcome {
+        font-size: 1.8rem;
+        font-weight: 600;
+      }
+
+      .navbar .logout-btn {
+        background: #bb0000;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        transition: background 0.3s, transform 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .navbar .logout-btn:hover {
+        background: #d32f2f;
+        transform: translateY(-2px);
+      }
+
+      /* Container de Mensagens */
+      #messages-container {
+        width: 100%;
+        max-width: 900px;
+        margin-top: 2rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        transition: transform 0.3s ease;
+      }
+
+      #messages-container h2 {
+        font-size: 1.8rem;
+        color: #003366;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .message {
+        font-size: 1rem;
+        color: #333;
+        background: #f7f9fc;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: transform 0.3s ease;
+        flex-direction: column;
+      }
+
+      .message:hover {
+        transform: translateY(-5px);
+      }
+
+      /* Checkboxes Personalizados */
+      .select-checkbox {
+        display: none;
+      }
+
+      .select-mode .select-checkbox + label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .select-checkbox + label {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #007bff;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+      }
+
+      .select-checkbox + label::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        background-color: #007bff;
+        border-radius: 2px;
+        position: absolute;
+        opacity: 0;
+        transform: scale(0);
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+
+      .select-checkbox:checked + label::before {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .select-checkbox + label::after {
+        content: "✓";
+        color: #fff;
+        font-size: 14px;
+        position: absolute;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.2s ease;
+      }
+
+      .select-checkbox:checked + label::after {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .select-checkbox + label:hover {
+        border-color: #0056b3;
+      }
+
+      /* Títulos e Conteúdo das Mensagens */
+      .message-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #0054a8;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .delete-btn {
+        background: #ff6b6b;
+        color: #fff;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 50%;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .delete-btn:hover {
+        background: #d32f2f;
+        transform: scale(1.1);
+      }
+
+      .message-content {
+        background-color: #ffffff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin-top: 0.5rem;
+        flex-basis: 70%;
+        width: 100%;
+      }
+
+      .message-content a {
+        color: #00b4eb;
+        text-decoration: none;
+        margin-top: 1rem;
+        font-weight: bold;
+        display: inline-block;
+        transition: color 0.3s ease;
+      }
+
+      .message-content a:hover {
+        color: #007bff;
+        text-decoration: underline;
+      }
+
+      /* Modal de Confirmação */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .modal-content {
+        background: #ffffff;
+        padding: 2rem;
+        width: 100%;
+        max-width: 500px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        position: relative;
+        animation: fadeIn 0.4s ease-in-out;
+      }
+
+      .modal-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .icon-warning {
+        font-size: 40px;
+        color: #ff6b6b;
+        margin-bottom: 0.5rem;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.5em;
+        color: #333;
+      }
+
+      .modal-body {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .modal-button {
+        width: 48%;
+        padding: 0.75rem;
+        font-weight: bold;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      .confirm-btn {
+        background-color: #ff6b6b;
+        color: white;
+      }
+
+      .confirm-btn:hover {
+        background-color: #e55a5a;
+        transform: scale(1.05);
+      }
+
+      .cancel-btn {
+        background-color: #dcdcdc;
+        color: #333;
+      }
+
+      .cancel-btn:hover {
+        background-color: #bbbbbb;
+        transform: scale(1.05);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #aaa;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .close-btn:hover {
+        color: #333;
+      }
+
+      /* Animação para o modal */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Button Logout */
+      /* From Uiverse.io by kennyotsu-monochromia */
+      .Btn-logout {
+        --black: #000000;
+        --ch-black: #141414;
+        --eer-black: #1b1b1b;
+        --night-rider: #2e2e2e;
+        --white: #ffffff;
+        --af-white: #f3f3f3;
+        --ch-white: #e1e1e1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 45px;
+        height: 45px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-duration: 0.3s;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+        background-color: var(--night-rider);
+      }
+
+      /* plus sign */
+      .sign {
+        width: 100%;
+        transition-duration: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sign svg {
+        width: 17px;
+      }
+
+      .sign svg path {
+        fill: var(--af-white);
+      }
+      /* text */
+      .text {
+        position: absolute;
+        right: 0%;
+        width: 0%;
+        opacity: 0;
+        color: var(--af-white);
+        font-size: 1.2em;
+        font-weight: 600;
+        transition-duration: 0.3s;
+      }
+      /* hover effect on button width */
+      .Btn-logout:hover {
+        width: 155px;
+        border-radius: 5px;
+        transition-duration: 0.3s;
+      }
+
+      .Btn-logout:hover .sign {
+        width: 30%;
+        transition-duration: 0.3s;
+        padding-left: 20px;
+      }
+      /* hover effect button's text */
+      .Btn-logout:hover .text {
+        opacity: 1;
+        width: 70%;
+        transition-duration: 0.3s;
+        padding-right: 10px;
+      }
+      /* button click effect*/
+      .Btn-logout:active {
+        transform: translate(2px, 2px);
+      }
+      /* Fim Button Logout */
+
+      /* BARRA DE AÇÕES */
+
+      /* Estilos para a Barra de Ações */
+      #messages-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 900px;
+        margin-top: 1.5rem;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Campo de Busca */
+      #searchBar {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        margin-right: 1.5rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      #searchBar:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        outline: none;
+      }
+
+      /* Botões */
+      #selectMessagesBtn,
+      #deleteSelectedBtn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        color: #ffffff;
+        min-width: 120px;
+      }
+
+      #selectMessagesBtn {
+        margin-right: 0.75rem;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+      }
+
+      #selectMessagesBtn:hover {
+        background: linear-gradient(135deg, #0069d9, #004b9a);
+        transform: translateY(-2px);
+      }
+
+      #selectMessagesBtn:disabled {
+        background: linear-gradient(135deg, #c4c4c4, #a0a0a0);
+        cursor: not-allowed;
+      }
+
+      #deleteSelectedBtn {
+        background: linear-gradient(135deg, #ff6b6b, #d32f2f);
+      }
+
+      #deleteSelectedBtn:hover {
+        background: linear-gradient(135deg, #e55a5a, #a62828);
+        transform: translateY(-2px);
+      }
+
+      #deleteSelectedBtn:disabled {
+        background: linear-gradient(135deg, #c4c4c4, #a0a0a0);
+        cursor: not-allowed;
+      }
+
+      /* Responsividade */
+      @media (max-width: 768px) {
+        #messages-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        #searchBar {
+          margin-right: 0;
+          margin-bottom: 1rem;
+        }
+
+        #selectMessagesBtn,
+        #deleteSelectedBtn {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: 0.5rem;
+        }
+
+        .message {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      /* Ajustes para evitar duplicação de checkboxes */
+      .select-checkbox + label {
+        display: none; /* Esconde o label por padrão */
+      }
+
+      #messages-container.select-mode .select-checkbox + label {
+        display: flex; /* Exibe o label apenas no modo de seleção */
+      }
+
+      /* Ajustes na disposição dos elementos da mensagem */
+      .message-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #0054a8;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .message-content p {
+        margin-bottom: 0.5rem;
+      }
+
+      /* CHECKBOX */
+
+      .styled-checkbox {
+        /* Removendo a aparência padrão */
+        appearance: none;
+        -webkit-appearance: none;
+        width: 28px; /* Tamanho do checkbox */
+        height: 28px;
+        border: 2px solid #888; /* Cor da borda */
+        border-radius: 10px; /* Bordas arredondadas */
+        background-color: #f0f0f0; /* Cor de fundo padrão */
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+        display: inline-block;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Sombra */
+      }
+
+      .styled-checkbox::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 14px; /* Tamanho do "check" */
+        height: 14px;
+        background-color: #4caf50; /* Cor do "check" */
+        border-radius: 50%; /* Forma circular */
+        transform: scale(0) translate(-50%, -50%); /* Aparece do centro */
+        transition: transform 0.3s ease-in-out; /* Suavização da transição */
+      }
+
+      .styled-checkbox:checked {
+        border-color: #4caf50; /* Cor da borda ao marcar */
+        background-color: #e0f7e0; /* Cor de fundo ao marcar */
+      }
+
+      .styled-checkbox:checked::before {
+        transform: scale(1) translate(-50%, -50%); /* Aparece do meio */
+      }
+
+      .styled-checkbox:hover {
+        border-color: #4caf50; /* Mudança da borda ao passar o mouse */
+        box-shadow: 0 3px 15px rgb(38, 255, 0); /* Sombra ao passar o mouse */
+      }
+
+      .styled-checkbox:focus {
+        outline: none; /* Remove o contorno padrão */
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Sombra verde ao focar */
+      }
+
+      /* Efeito de animação ao pressionar */
+      .styled-checkbox:active {
+        transform: scale(0.95); /* Efeito de "pressionar" */
+      }
+
+      /*? RESPONSIVIDADE MOBILE ?*/
+      /* @media (max-width: 768px) {
+        .navbar {
+          flex-direction: column;
+          padding: 1rem;
+          text-align: center;
+        }
+
+        .navbar .logout-btn {
+          width: 100%;
+          margin-top: 1rem;
+          justify-content: center;
+        }
+
+        #messages-header {
+          flex-direction: column;
+          align-items: stretch;
+          padding: 1rem;
+        }
+
+        #searchBar {
+          margin-bottom: 1rem;
+          width: 100%;
+          font-size: 0.9rem;
+        }
+
+        #selectMessagesBtn,
+        #deleteSelectedBtn {
+          width: 100%;
+          margin-bottom: 0.5rem;
+          font-size: 0.9rem;
+        }
+
+        #messages-container {
+          padding: 1rem;
+        }
+
+        .message {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 1rem;
+        }
+
+        .message-title {
+          font-size: 1.1rem;
+        }
+
+        .message-content {
+          width: 100%;
+          padding: 0.8rem;
+        }
+
+        .delete-btn {
+          top: 5px;
+          right: 5px;
+          width: 35px;
+          height: 35px;
+        }
+
+        .modal-content {
+          padding: 1rem;
+          max-width: 90%;
+        }
+
+        .modal-footer {
+          flex-direction: column;
+        }
+
+        .modal-button {
+          width: 100%;
+          margin-bottom: 0.5rem;
+        }
+
+        .Btn-logout {
+          width: 100%;
+          justify-content: center;
+        }
+      } */
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div class="navbar">
+      <div class="welcome">Bem-vindo(a), Administrador</div>
+      <button class="Btn-logout logout-btn" onclick="logout()">
+        <div class="sign">
+          <svg viewBox="0 0 512 512">
+            <path
+              d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"
+            ></path>
+          </svg>
+        </div>
+        <div class="text">Logout</div>
+      </button>
+    </div>
+
+    <!-- Barra de Ações -->
+    <div id="messages-header">
+      <input
+        type="text"
+        id="searchBar"
+        placeholder="Buscar mensagens..."
+        onkeyup="searchMessages()"
+      />
+      <button id="selectMessagesBtn" onclick="toggleSelectMode()">
+        Selecionar Mensagens
+      </button>
+      <button id="deleteSelectedBtn" onclick="openBulkDeleteModal()" disabled>
+        Apagar
+      </button>
+    </div>
+
+    <!-- Container de Mensagens -->
+    <div id="messages-container">
+      <h2>Mensagens Recebidas</h2>
+      <div id="messages"></div>
+    </div>
+
+    <!-- Modal de Confirmação Individual -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <div class="modal-header">
+          <i class="icon-warning">⚠️</i>
+          <h2>Excluir Mensagem</h2>
+        </div>
+        <p class="modal-body">
+          Tem certeza de que deseja excluir esta mensagem? Esta ação não pode
+          ser desfeita.
+        </p>
+        <div class="modal-footer">
+          <button class="modal-button cancel-btn" onclick="closeModal()">
+            Cancelar
+          </button>
+          <button class="modal-button confirm-btn" onclick="confirmDelete()">
+            Sim, excluir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmação para Exclusão em Massa -->
+    <div id="bulkDeleteModal" class="modal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeBulkDeleteModal()">
+          &times;
+        </button>
+        <div class="modal-header">
+          <i class="icon-warning">⚠️</i>
+          <h2>Excluir Mensagens Selecionadas</h2>
+        </div>
+        <p class="modal-body">
+          Tem certeza de que deseja excluir as mensagens selecionadas? Esta ação
+          não pode ser desfeita.
+        </p>
+        <div class="modal-footer">
+          <button
+            class="modal-button cancel-btn"
+            onclick="closeBulkDeleteModal()"
+          >
+            Cancelar
+          </button>
+          <button
+            class="modal-button confirm-btn"
+            onclick="confirmBulkDelete()"
+          >
+            Sim, excluir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let messageIdToDelete = null;
+      let selectedMessages = new Set();
+      let isSelectMode = false;
+
+      // Verifica a sessão do usuário antes de buscar as mensagens
+      fetch("/check-session")
+        .then((response) => response.json())
+        .then((data) => {
+          if (!data.authenticated) {
+            window.location.href = "/login.html";
+          } else {
+            loadMessages();
+          }
+        });
+
+      // Função para buscar e exibir as mensagens
+      function loadMessages() {
+        fetch("/messages")
+          .then((response) => response.json())
+          .then((data) => {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML = ""; // Limpa mensagens antigas
+            data.forEach((msg) => {
+              const messageElement = document.createElement("div");
+              messageElement.className = "message";
+              messageElement.innerHTML = `
+                            <input type="checkbox" class="select-checkbox styled-checkbox" id="checkbox-${msg.id}" onclick="toggleSelect(${msg.id})">
+                            <div class="message-title" style="text-align: center; margin-bottom: 10px; width: 95%;">
+                              <span style="font-size: 1.2em; font-weight: bold;">${msg.titulo}</span>
+                            </div>
+                            <div class="message-content">
+                                <p><strong>Nome:</strong> ${msg.nome}</p>
+                                <p><strong>Email:</strong> ${msg.email}</p>
+                                <p><strong>Mensagem:</strong></p>
+                                <p>${msg.mensagem}</p>
+                                <a href="mailto:${msg.email}">Responder</a>
+                            </div>
+                            <button class="delete-btn" onclick="openModal(${msg.id})">❌</button>
+                        `;
+              messagesDiv.appendChild(messageElement);
+            });
+
+            // Atualiza a visibilidade das checkboxes conforme o modo de seleção
+            document
+              .querySelectorAll(".select-checkbox")
+              .forEach((checkbox) => {
+                checkbox.style.display = isSelectMode ? "inline-block" : "none";
+              });
+          });
+      }
+
+      // Função para alternar o modo de seleção
+      function toggleSelectMode() {
+        isSelectMode = !isSelectMode;
+        document
+          .getElementById("messages-container")
+          .classList.toggle("select-mode", isSelectMode);
+        document.querySelectorAll(".select-checkbox").forEach((checkbox) => {
+          checkbox.style.display = isSelectMode ? "inline-block" : "none";
+          checkbox.checked = false; // Desmarca todas as caixas de seleção
+        });
+        selectedMessages.clear(); // Limpa mensagens selecionadas
+        document.getElementById("deleteSelectedBtn").disabled = true; // Desativa o botão de apagar
+      }
+
+      // Função para alternar a seleção de mensagens
+      function toggleSelect(messageId) {
+        const checkbox = document.getElementById(`checkbox-${messageId}`);
+        if (checkbox.checked) {
+          selectedMessages.add(messageId);
+        } else {
+          selectedMessages.delete(messageId);
+        }
+        document.getElementById("deleteSelectedBtn").disabled =
+          selectedMessages.size === 0;
+      }
+
+      // Função para buscar mensagens com base na pesquisa pelo nome
+      function searchMessages() {
+        const query = document.getElementById("searchBar").value.toLowerCase();
+        document.querySelectorAll(".message").forEach((message) => {
+          const nameElement = message.querySelector("p strong");
+          if (nameElement) {
+            const name = nameElement.nextSibling.textContent.toLowerCase();
+            message.style.display = name.includes(query) ? "" : "none";
+          }
+        });
+      }
+
+      // Função para abrir o modal de exclusão em massa
+      function openBulkDeleteModal() {
+        if (selectedMessages.size > 0) {
+          document.getElementById("bulkDeleteModal").style.display = "flex";
+        }
+      }
+
+      // Função para fechar o modal de exclusão em massa
+      function closeBulkDeleteModal() {
+        document.getElementById("bulkDeleteModal").style.display = "none";
+      }
+
+      // Confirmação de exclusão em massa
+      function confirmBulkDelete() {
+        const promises = Array.from(selectedMessages).map((id) =>
+          fetch(`/message/${id}`, { method: "DELETE" })
+        );
+
+        Promise.all(promises)
+          .then(() => {
+            loadMessages(); // Recarrega as mensagens após a exclusão
+            closeBulkDeleteModal(); // Fecha o modal
+            selectedMessages.clear(); // Limpa as mensagens selecionadas
+            document.getElementById("deleteSelectedBtn").disabled = true; // Desativa o botão de apagar
+            isSelectMode = false;
+            toggleSelectMode(); // Sai do modo de seleção
+          })
+          .catch((error) => {
+            console.error("Erro ao excluir mensagens:", error);
+            alert("Ocorreu um erro ao excluir as mensagens. Tente novamente.");
+          });
+      }
+
+      // Função para abrir o modal de confirmação de exclusão individual
+      function openModal(id) {
+        messageIdToDelete = id;
+        document.getElementById("deleteModal").style.display = "flex";
+      }
+
+      // Função para fechar o modal
+      function closeModal() {
+        document.getElementById("deleteModal").style.display = "none";
+        messageIdToDelete = null;
+      }
+
+      // Função para confirmar a exclusão individual
+      function confirmDelete() {
+        if (messageIdToDelete !== null) {
+          fetch(`/message/${messageIdToDelete}`, { method: "DELETE" })
+            .then((response) => {
+              if (response.ok) {
+                alert("Mensagem excluída com sucesso!");
+                loadMessages(); // Recarrega as mensagens
+                closeModal(); // Fecha o modal
+              } else {
+                throw new Error("Falha ao excluir a mensagem.");
+              }
+            })
+            .catch((error) => {
+              console.error("Erro ao excluir mensagem:", error);
+              alert("Ocorreu um erro ao excluir a mensagem. Tente novamente.");
+            });
+        }
+      }
+
+      // Função para logout
+      function logout() {
+        fetch("/logout")
+          .then((response) => {
+            if (response.ok) {
+              window.location.href = "/login.html";
+            } else {
+              throw new Error("Falha ao realizar logout.");
+            }
+          })
+          .catch((error) => {
+            console.error("Erro ao realizar logout:", error);
+            alert("Ocorreu um erro ao realizar logout. Tente novamente.");
+          });
+      }
+
+      // Fechar modais ao clicar fora do conteúdo
+      window.onclick = function (event) {
+        const deleteModal = document.getElementById("deleteModal");
+        const bulkDeleteModal = document.getElementById("bulkDeleteModal");
+        if (event.target == deleteModal) {
+          closeModal();
+        }
+        if (event.target == bulkDeleteModal) {
+          closeBulkDeleteModal();
+        }
+      };
+    </script>
+  </body>
+</html>
