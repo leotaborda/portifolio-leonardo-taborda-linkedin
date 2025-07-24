@@ -757,7 +757,7 @@ Leonardo <script>document.write(new Date().getFullYear());</script> Direitos res
         .then(response => response.text())
         .then(data => {
             alert(data);
-			location.reload(); // Recarrega a página no topo após o envio da mensagem
+			location.reload(); 
         })
         .catch(error => {
             alert("Erro ao enviar a mensagem, tente novamente.");
@@ -770,7 +770,6 @@ Leonardo <script>document.write(new Date().getFullYear());</script> Direitos res
         const tituloCount = document.getElementById('titulo-count');
         const mensagemCount = document.getElementById('mensagem-count');
 
-        // Função para atualizar a contagem
         function updateCount() {
             const tituloLength = tituloInput.value.length;
             const mensagemLength = mensagemTextarea.value.length;
@@ -778,15 +777,22 @@ Leonardo <script>document.write(new Date().getFullYear());</script> Direitos res
             mensagemCount.textContent = `${500 - mensagemLength} caracteres restantes`;
         }
 
-        // Eventos para atualizar contagem ao digitar
         tituloInput.addEventListener('input', updateCount);
         mensagemTextarea.addEventListener('input', updateCount);
 
-        // Inicializa a contagem na carga da página
         updateCount();
     });
 	</script>
 
 	</body>
+	<!-- Modal -->
+	<div id="successModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+		<div class="modal-content">
+			<button class="close-btn" aria-label="Fechar modal">&times;</button>
+			<div class="modal-icon">✅</div>
+			<h2 id="modalTitle">Mensagem enviada com sucesso!</h2>
+			<p>Obrigado pelo contato. Em breve irei te retornar!</p>
+		</div>
+	</div>
 </html>
 
