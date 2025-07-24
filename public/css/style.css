@@ -2102,5 +2102,9 @@ body.offcanvas .colorlib-nav-toggle {
   height: 1px;
   border-radius: 100%;
   display: block;
+}
 
+#extra-sites{
+  flex-wrap: wrap;
+	display: none;
 }
