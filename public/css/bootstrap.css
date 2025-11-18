@@ -2164,6 +2164,12 @@ input[type="search"] {
   margin-bottom: 15px;
 }
 
+.form-group textarea {
+  resize: vertical;
+  min-height: 54px;
+  max-height: 500px;
+}
+
 .radio,
 .checkbox {
   position: relative;
