@@ -295,7 +295,6 @@ figure figcaption {
 .language-switcher {
   display: flex;
   justify-content: center;
-  gap: 8px;
   margin: 10px 0 22px;
 }
 
@@ -309,7 +308,6 @@ figure figcaption {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
-  border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
@@ -2869,6 +2867,90 @@ body.offcanvas .colorlib-nav-toggle {
 
 .top-button:hover {
   background-color: #e4e5eb;
+}
+
+.spline-whatsapp-widget {
+  position: fixed;
+  right: -170px;
+  bottom: -24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-decoration: none;
+  color: inherit;
+}
+
+.spline-whatsapp-bubble {
+  position: relative;
+  max-width: 255px;
+  padding: 14px 16px;
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid rgba(0, 94, 255, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.16);
+  font-family: "Quicksand", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, color 0,2 ease;
+  margin-bottom: -32px;
+}
+
+.spline-whatsapp-bubble:hover {
+  color: #003d99;
+}
+
+.spline-whatsapp-bubble:hover,
+.spline-whatsapp-bubble:focus,
+.spline-whatsapp-model:hover,
+.spline-whatsapp-model:focus {
+  text-decoration: none;
+}
+
+.spline-whatsapp-bubble strong {
+  color: #005eff;
+  text-decoration: underline;
+}
+
+.spline-whatsapp-bubble::after {
+  content: "";
+  position: absolute;
+  right: 96px;
+  bottom: -10px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 94, 255, 0.18);
+  border-right: 1px solid rgba(0, 94, 255, 0.18);
+  transform: rotate(45deg);
+}
+
+.spline-whatsapp-model {
+  display: block;
+  aspect-ratio: 16/9;
+  height: 250px;
+  overflow: hidden;
+}
+
+.spline-whatsapp-model spline-viewer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.spline-whatsapp-widget:hover .spline-whatsapp-bubble,
+.spline-whatsapp-widget:focus .spline-whatsapp-bubble {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+@media screen and (max-width: 1400px) {
+  .spline-whatsapp-widget {
+    display: none;
+  }
 }
 
 @media print {
