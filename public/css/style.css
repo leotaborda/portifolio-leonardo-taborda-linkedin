@@ -171,11 +171,73 @@ figure figcaption {
   width: 150px;
   height: 150px;
   margin: 0 auto;
-  margin-bottom: 30px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
   border-radius: 50%;
+}
+
+#colorlib-aside .author-media {
+  width: 150px;
+  height: 150px;
+  padding: 0;
+  margin: 0 auto 30px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  perspective: 1000px;
+  cursor: pointer;
+  display: block;
+}
+
+#colorlib-aside .author-media:focus-visible {
+  outline: 3px solid rgba(66, 133, 244, 0.35);
+  outline-offset: 6px;
+}
+
+#colorlib-aside .author-media-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+  border-radius: 999px;
+}
+
+#colorlib-aside .author-media.is-video .author-media-inner {
+  transform: rotateY(180deg);
+}
+
+#colorlib-aside .author-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+#colorlib-aside .author-face-photo {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#colorlib-aside .author-face-video {
+  transform: rotateY(180deg);
+  background: #000;
+}
+
+#colorlib-aside .author-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
 }
 
 #colorlib-aside .position {

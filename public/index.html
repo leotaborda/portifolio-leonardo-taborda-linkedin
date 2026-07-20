@@ -51,7 +51,14 @@
 		<a href="#" class="js-colorlib-nav-toggle colorlib-nav-toggle" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i></i></a>
 		<aside id="colorlib-aside" role="complementary" class="border js-fullheight">
 			<div class="text-center">
-				<div class="author-img" style="background-image: url(images/perfil-leotaborda.JPEG);"></div>
+				<button class="author-media" id="authorMedia" type="button" aria-label="Reproduzir video de perfil">
+					<span class="author-media-inner">
+						<span class="author-face author-face-photo author-img" style="background-image: url(images/perfil-leotaborda.JPEG);"></span>
+						<span class="author-face author-face-video">
+							<video id="authorVideo" class="author-video" src="images/video.mp4" preload="metadata" playsinline></video>
+						</span>
+					</span>
+				</button>
 				<h1 class="colorlib-logo" id="colorlib-logo"><a href="index.html">Leonardo Taborda</a></h1>
 				<span class="position"><a href="#">Dev Front-End</a> em Campinas - SP</span>
 			</div>
@@ -1455,6 +1462,42 @@
 		}
 
 		document.addEventListener("DOMContentLoaded", function() {
+			var authorMedia = document.getElementById("authorMedia");
+			var authorVideo = document.getElementById("authorVideo");
+
+			if (authorMedia && authorVideo) {
+				authorMedia.addEventListener("click", function() {
+					if (authorMedia.classList.contains("is-video") || authorMedia.classList.contains("is-animating")) {
+						return;
+					}
+
+					authorMedia.classList.add("is-animating");
+					authorMedia.classList.add("is-video");
+					authorVideo.currentTime = 0;
+					var playPromise = authorVideo.play();
+
+					if (playPromise && typeof playPromise.catch === "function") {
+						playPromise.catch(function() {
+							authorMedia.classList.remove("is-video", "is-animating");
+						});
+					}
+				});
+
+				authorMedia.addEventListener("transitionend", function(event) {
+					if (event.propertyName !== "transform") {
+						return;
+					}
+
+					authorMedia.classList.remove("is-animating");
+				});
+
+				authorVideo.addEventListener("ended", function() {
+					authorMedia.classList.add("is-animating");
+					authorMedia.classList.remove("is-video");
+					authorVideo.currentTime = 0;
+				});
+			}
+
 			const tituloInput = document.querySelector('input[name="titulo"]');
 			const mensagemTextarea = document.querySelector('textarea[name="mensagem"]');
 			tituloInput.addEventListener('input', updateCount);
