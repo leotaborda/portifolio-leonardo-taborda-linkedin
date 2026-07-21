@@ -1963,6 +1963,10 @@ body.offcanvas .colorlib-nav-toggle {
     visibility: visible !important;
     transform: none !important;
   }
+
+  .spline-whatsapp-widget {
+    display: none !important;
+  }
 }
 
 .work-menu span {
